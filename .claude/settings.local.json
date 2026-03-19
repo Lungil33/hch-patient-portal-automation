@@ -11,7 +11,20 @@
       "Bash(powershell.exe -Command \"Get-Command node -ErrorAction SilentlyContinue; Get-ChildItem ''C:\\\\Program Files\\\\nodejs'' -ErrorAction SilentlyContinue | Select-Object -First 5; Get-ChildItem ''C:\\\\Program Files \\(x86\\)\\\\nodejs'' -ErrorAction SilentlyContinue | Select-Object -First 5; ls C:\\\\Users\\\\LungileWillie\\\\AppData\\\\Roaming\\\\npm -ErrorAction SilentlyContinue | Select-Object -First 5\")",
       "Bash(powershell.exe -Command \"& ''C:\\\\Program Files\\\\nodejs\\\\node.exe'' --version; & ''C:\\\\Program Files\\\\nodejs\\\\npm.cmd'' --version\")",
       "Bash(powershell.exe -Command \"git config --global user.name; git config --global user.email; git config --global credential.helper\")",
-      "Bash(powershell.exe -Command \"Set-Location ''C:\\\\Users\\\\LungileWillie\\\\Desktop\\\\HCH AUTOMATION LUNGIE. 19 March 2026''; git init; git add .; git commit -m ''Initial commit: HCH patient appointment booking automation:*)"
+      "Bash(powershell.exe -Command \"Set-Location ''C:\\\\Users\\\\LungileWillie\\\\Desktop\\\\HCH AUTOMATION LUNGIE. 19 March 2026''; git init; git add .; git commit -m ''Initial commit: HCH patient appointment booking automation:*)",
+      "Bash(powershell.exe -Command \"Set-Location ''C:\\\\Users\\\\LungileWillie\\\\Desktop\\\\HCH AUTOMATION LUNGIE. 19 March 2026''; & ''C:\\\\Program Files\\\\nodejs\\\\npm.cmd'' install\")",
+      "Bash(powershell.exe -Command \"Set-Location ''C:\\\\Users\\\\LungileWillie\\\\Desktop\\\\HCH AUTOMATION LUNGIE. 19 March 2026''; & ''C:\\\\Program Files\\\\nodejs\\\\npx.cmd'' playwright install chromium\")",
+      "Bash(powershell.exe -Command \":*)",
+      "Bash(powershell.exe -Command \"Get-ChildItem $env:LOCALAPPDATA\\\\ms-playwright -ErrorAction SilentlyContinue | Select-Object Name\")",
+      "Bash(start msedge:*)",
+      "Bash(cmd /c \"cd /d \"\"C:\\\\Users\\\\LungileWillie\\\\Desktop\\\\HCH AUTOMATION LUNGIE. 19 March 2026\"\" && node --version && npm --version\")",
+      "Bash(cmd /c \"where node 2>&1 & where npm 2>&1 & where npx 2>&1\")",
+      "Bash(cmd /c \"dir \"\"C:\\\\Program Files\\\\nodejs\"\" 2>&1 & dir \"\"C:\\\\Program Files \\(x86\\)\\\\nodejs\"\" 2>&1 & dir \"\"%APPDATA%\\\\npm\"\" 2>&1\")",
+      "Bash(powershell -Command \"Get-Command node -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source; Get-Command npm -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source\")",
+      "Bash(powershell -Command \"Get-ChildItem ''C:\\\\Program Files'' -Directory | Where-Object { $_Name -match ''node|npm'' } | Select-Object Name\")",
+      "Bash(powershell -Command \"Get-ChildItem -Path ''C:\\\\'' -Recurse -Filter ''node.exe'' -ErrorAction SilentlyContinue 2>&1 | Select-Object -First 5 FullName\")",
+      "Bash(powershell -Command \"& ''C:\\\\Program Files\\\\nodejs\\\\npx.cmd'' playwright install chromium 2>&1\")",
+      "Bash(powershell -Command \"code ''C:\\\\Users\\\\LungileWillie\\\\Desktop\\\\HCH AUTOMATION LUNGIE. 19 March 2026'' 2>&1\")"
     ]
   }
 }
