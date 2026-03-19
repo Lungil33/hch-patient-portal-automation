@@ -1,0 +1,52 @@
+name: HCH Patient Portal – Playwright Tests
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch: # Allow manual runs from the GitHub Actions UI
+
+jobs:
+  test:
+    name: Run Appointment Booking Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright tests
+        run: npx playwright test
+        env:
+          # These values come from GitHub repository secrets.
+          # Add them at: Settings → Secrets and variables → Actions → New secret
+          HCH_PORTAL_URL:       ${{ secrets.HCH_PORTAL_URL }}
+          HCH_PATIENT_EMAIL:    ${{ secrets.HCH_PATIENT_EMAIL }}
+          HCH_PATIENT_PASSWORD: ${{ secrets.HCH_PATIENT_PASSWORD }}
+          HCH_SERVICE_TYPE:     ${{ secrets.HCH_SERVICE_TYPE }}
+          HCH_PROVIDER_NAME:    ${{ secrets.HCH_PROVIDER_NAME }}
+          HCH_PREFERRED_DATE:   ${{ secrets.HCH_PREFERRED_DATE }}
+          CI: true
+
+      - name: Upload HTML report
+        uses: actions/upload-artifact@v4
+        # Always upload the report — it's most useful when tests fail
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14

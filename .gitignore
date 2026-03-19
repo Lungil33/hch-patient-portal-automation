@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+
+# Environment variables — NEVER commit this file (it contains credentials)
+.env
+
+# Playwright auth state — contains saved patient session tokens
+.auth/
+
+# Generated test reports and artifacts
+playwright-report/
+test-results/
+
+# TypeScript build output
+dist/
+*.tsbuildinfo
