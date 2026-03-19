@@ -18,17 +18,24 @@ export abstract class BasePage {
   // The raw Playwright page — available to all subclasses
   protected readonly page: Page;
 
-  // The portal's base URL, read from the HCH_PORTAL_URL env var
+  // The portal's base URL, read from the env var specified in urlEnvVar
   protected readonly baseUrl: string;
 
-  constructor(page: Page) {
+  /**
+   * @param page       Playwright Page instance
+   * @param urlEnvVar  Name of the env var holding the base URL.
+   *                   Defaults to 'HCH_PORTAL_URL' so existing page objects
+   *                   require no changes.  Pass 'HCH_DYNAMICS_URL' for
+   *                   Dynamics 365 / Power Apps page objects.
+   */
+  constructor(page: Page, urlEnvVar: string = 'HCH_PORTAL_URL') {
     this.page = page;
-    this.baseUrl = process.env.HCH_PORTAL_URL ?? '';
+    this.baseUrl = process.env[urlEnvVar] ?? '';
 
     if (!this.baseUrl) {
       throw new Error(
-        'HCH_PORTAL_URL is not set.\n' +
-        'Copy .env.example to .env and fill in the portal URL before running tests.'
+        `${urlEnvVar} is not set.\n` +
+        'Copy .env.example to .env and fill in the correct URL before running tests.'
       );
     }
   }

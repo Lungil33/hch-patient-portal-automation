@@ -20,12 +20,17 @@
 
 import { test as base, expect } from '@playwright/test';
 import { AppointmentBookingPage } from '../../pages/AppointmentBookingPage';
-import { PatientPortalLoginPage } from '../../pages/PatientPortalLoginPage';
+import { PatientPortalLoginPage }  from '../../pages/PatientPortalLoginPage';
+import { AppointmentCheckPage }    from '../../pages/AppointmentCheckPage';
 
 // Declare the shape of our custom fixtures so TypeScript knows about them
 type HchFixtures = {
-  bookingPage: AppointmentBookingPage;
-  loginPage:   PatientPortalLoginPage;
+  bookingPage:          AppointmentBookingPage;
+  loginPage:            PatientPortalLoginPage;
+  // appointmentCheckPage — pre-built page object for the chatbot tests (P-03→P-09).
+  // The page context is pre-authenticated via .auth/dynamics.json when running
+  // under the 'microsoft-edge' project in playwright.config.ts.
+  appointmentCheckPage: AppointmentCheckPage;
 };
 
 export const test = base.extend<HchFixtures>({
@@ -42,6 +47,15 @@ export const test = base.extend<HchFixtures>({
   loginPage: async ({ page }, use) => {
     const loginPage = new PatientPortalLoginPage(page);
     await use(loginPage);
+  },
+
+  // appointmentCheckPage fixture — Dynamics 365 chatbot tests
+  // The storageState for these tests is '.auth/dynamics.json', applied by the
+  // 'microsoft-edge' project configuration in playwright.config.ts.
+  appointmentCheckPage: async ({ page }, use) => {
+    const checkPage = new AppointmentCheckPage(page);
+    await use(checkPage);
+    // No teardown — context is destroyed after each test
   },
 });
 
