@@ -32,7 +32,7 @@ export class AppointmentBookingPage extends BasePage {
    *   this.page.getByRole('link', { name: /book an appointment/i })
    */
   private bookAppointmentLink = () =>
-    this.page.getByRole('link', { name: /book.*(appointment|appointment)/i });
+    this.page.getByRole('link', { name: /book.*(appointment|booking)/i });
 
   /**
    * Step 1 — Service / appointment type selector.
@@ -117,7 +117,6 @@ export class AppointmentBookingPage extends BasePage {
    *                     (set via HCH_SERVICE_TYPE in .env)
    */
   async selectService(serviceType: string): Promise<void> {
-    await this.waitForVisible(this.serviceDropdown(), 'service type dropdown');
     await this.serviceDropdown().selectOption({ label: serviceType });
     await this.waitAfterAction(this.providerDropdown(), 'provider dropdown');
   }
@@ -130,7 +129,6 @@ export class AppointmentBookingPage extends BasePage {
    *                      (set via HCH_PROVIDER_NAME in .env)
    */
   async selectProvider(providerName: string): Promise<void> {
-    await this.waitForVisible(this.providerDropdown(), 'provider dropdown');
     await this.providerDropdown().selectOption({ label: providerName });
     await this.waitAfterAction(this.dateInput(), 'date input');
   }
@@ -142,7 +140,6 @@ export class AppointmentBookingPage extends BasePage {
    * @param date  e.g. '2026-04-01' (set via HCH_PREFERRED_DATE in .env)
    */
   async selectDate(date: string): Promise<void> {
-    await this.waitForVisible(this.dateInput(), 'date input');
     await this.dateInput().fill(date);
     await this.dateInput().press('Tab');
     await this.waitAfterAction(this.firstAvailableSlot(), 'first available time slot');
@@ -153,7 +150,6 @@ export class AppointmentBookingPage extends BasePage {
    * Waits for the confirm button to appear after selecting a slot.
    */
   async selectFirstAvailableSlot(): Promise<void> {
-    await this.waitForVisible(this.firstAvailableSlot(), 'first available time slot');
     await this.firstAvailableSlot().click();
     await this.waitAfterAction(this.confirmButton(), '"Confirm booking" button');
   }
@@ -163,7 +159,6 @@ export class AppointmentBookingPage extends BasePage {
    * Waits for the confirmation heading to appear after submission.
    */
   async confirmBooking(): Promise<void> {
-    await this.waitForVisible(this.confirmButton(), '"Confirm booking" button');
     await this.confirmButton().click();
     await this.waitAfterAction(this.bookingConfirmationHeading(), 'booking confirmation');
   }

@@ -198,13 +198,15 @@ export class AppointmentCheckPage extends BasePage {
   // this action will be a no-op because the button won't be visible.
   async openChatbot(): Promise<void> {
     const btn = this.chatbotButton();
-    const isVisible = await btn.isVisible().catch(() => false);
+    // Wait up to 5 s for the trigger button to appear; if it doesn't,
+    // assume the chat panel is already open (some Power Apps chatbots auto-expand).
+    const appeared = await btn.waitFor({ state: 'visible', timeout: 5_000 })
+      .then(() => true)
+      .catch(() => false);
 
-    if (isVisible) {
+    if (appeared) {
       await btn.click();
     }
-    // If the button is not found, assume the chat panel is already open
-    // (some Power Apps chatbots auto-expand).
 
     // Wait for the chat input to be ready
     await this.waitForVisible(this.chatInput(), 'chatbot input field');
