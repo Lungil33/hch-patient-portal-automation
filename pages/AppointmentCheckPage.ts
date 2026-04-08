@@ -177,8 +177,9 @@ export class AppointmentCheckPage extends BasePage {
   async navigateToDynamicsApp(): Promise<void> {
     // baseUrl is already the full Dynamics 365 URL from HCH_DYNAMICS_URL
     await this.page.goto(this.baseUrl);
-    // Dynamics 365 can be slow to initialise all iframes — networkidle is safer
-    await this.page.waitForLoadState('networkidle');
+    // Dynamics 365 keeps background requests going — networkidle never fires.
+    // 'load' is sufficient; we then wait for the main content element instead.
+    await this.page.waitForLoadState('load');
     // Wait for the main Dynamics content area to be present
     // UPDATE: Replace with a more specific selector once you know the app structure
     await this.page
@@ -201,7 +202,6 @@ export class AppointmentCheckPage extends BasePage {
 
     if (isVisible) {
       await btn.click();
-      await this.page.waitForLoadState('networkidle');
     }
     // If the button is not found, assume the chat panel is already open
     // (some Power Apps chatbots auto-expand).
