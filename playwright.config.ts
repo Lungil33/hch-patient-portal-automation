@@ -57,33 +57,29 @@ export default defineConfig({
   globalTeardown: './global-teardown',
 
   projects: [
-    // ── Patient portal (booking) tests — Chromium ────────────────────────────
-    // Runs the existing P-01 / P-02 tests against the HCH patient portal.
-    // Uses storageState from .auth/patient.json saved by global-setup.ts.
+    // ── Patient portal (booking + login) tests — Chromium ───────────────────
+    // Runs P-01 (smoke), P-02 (booking), and P-10 (invalid login) against the
+    // HCH patient portal.  Uses storageState from .auth/patient.json.
     {
       name: 'chromium',
+      testMatch: [
+        '**/patient-booking.spec.ts',
+        '**/clinic-finder.spec.ts',
+      ],
       use: {
         ...devices['Desktop Chrome'],
-        // Ignore self-signed certs in non-prod HCH environments
         ignoreHTTPSErrors: true,
       },
     },
 
     // ── Dynamics 365 / chatbot tests — Google Chrome ─────────────────────────
-    // Runs the new P-03 → P-09 tests against the HCH Dynamics 365 UAT app.
-    //
-    // PREREQUISITES:
-    //   1. Run: npx playwright install chromium
-    //   2. Set HCH_DYNAMICS_URL, HCH_DYNAMICS_EMAIL, HCH_DYNAMICS_PASSWORD
-    //      in your .env file (see .env.example).
-    //
-    // storageState: .auth/dynamics.json is created by the Dynamics auth block
-    // in global-setup.ts (runs automatically before any test in this project).
-    //
-    // baseURL: overrides the global baseURL — Dynamics tests navigate using the
-    // full URL in HCH_DYNAMICS_URL rather than relative paths.
+    // Runs P-03 → P-09 against the HCH Dynamics 365 UAT app.
+    // storageState: .auth/dynamics.json is created by global-setup.ts.
     {
       name: 'google-chrome',
+      testMatch: [
+        '**/patient-check-appointments.spec.ts',
+      ],
       use: {
         ...devices['Desktop Chrome'],
         channel: 'chrome',
