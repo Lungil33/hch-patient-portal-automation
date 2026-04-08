@@ -65,6 +65,11 @@ import {
 
 test.describe('HCH Chatbot — Appointment Check (Smoke)', () => {
 
+  // Chatbot widget not yet deployed to UAT.
+  // Remove this line once the Copilot Studio / Power Virtual Agents widget
+  // is live, then update the selectors in AppointmentCheckPage.ts.
+  test.skip(true, 'Chatbot widget not yet deployed to UAT — update selectors in AppointmentCheckPage.ts when live');
+
   // ──────────────────────────────────────────────────────────────────────────
   // P-03: Dynamics 365 app loads and chatbot is accessible
   //
@@ -105,6 +110,11 @@ test.describe('HCH Chatbot — Appointment Check (Smoke)', () => {
 // ─────────────────────────────────────────────────────────────────────────────
 
 test.describe('HCH Chatbot — Appointment Check (Functional)', () => {
+
+  // Chatbot widget not yet deployed to UAT.
+  // Remove this line once the Copilot Studio / Power Virtual Agents widget
+  // is live, then update the selectors in AppointmentCheckPage.ts.
+  test.skip(true, 'Chatbot widget not yet deployed to UAT — update selectors in AppointmentCheckPage.ts when live');
 
   // ──────────────────────────────────────────────────────────────────────────
   // P-04: Bot recognises appointment-related intent
