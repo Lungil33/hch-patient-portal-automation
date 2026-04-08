@@ -85,8 +85,10 @@ export class PatientPortalLoginPage extends BasePage {
 
     await this.loginButton().click();
 
-    // Wait for the redirect after login to complete
-    await this.page.waitForLoadState('networkidle');
+    // Post-login destination varies by portal — use load fallback.
+    // UPDATE: Once the real post-login URL is known, pass the post-login
+    // indicator locator to waitAfterAction() for a faster, more reliable wait.
+    await this.waitAfterAction();
   }
 
   // ── Assertions ──────────────────────────────────────────────────────────────
@@ -97,6 +99,26 @@ export class PatientPortalLoginPage extends BasePage {
    */
   async assertLoginSuccessful(): Promise<void> {
     await expect(this.postLoginIndicator()).toBeVisible({ timeout: 30_000 });
+  }
+
+  /**
+   * Assert that the login attempt failed.
+   * Checks that an error message is displayed and the post-login dashboard is NOT visible.
+   * Used by negative-path tests (e.g. P-10) to confirm the portal rejects bad credentials.
+   *
+   * UPDATE: Adjust the error locator to match the exact error element in the HCH portal.
+   */
+  async assertLoginFailed(): Promise<void> {
+    // The portal should show some form of error text
+    const errorMessage = this.page.locator(
+      '[role="alert"], .error, .error-message, [class*="error"], [class*="invalid"], [data-testid*="error"]'
+    ).or(
+      this.page.getByText(/invalid|incorrect|failed|wrong|not found|credentials|try again/i)
+    );
+    await expect(errorMessage.first()).toBeVisible({ timeout: 15_000 });
+
+    // The post-login dashboard must NOT be visible
+    await expect(this.postLoginIndicator()).not.toBeVisible({ timeout: 5_000 });
   }
 
   /**
