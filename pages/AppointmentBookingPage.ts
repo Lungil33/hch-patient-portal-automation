@@ -101,16 +101,17 @@ export class AppointmentBookingPage extends BasePage {
 
   /**
    * Navigate to the booking start page from the patient dashboard.
-   * Clicks the "Book an appointment" link and waits for the form to load.
+   * Clicks the "Book an appointment" link and waits for the service dropdown.
    */
   async startBookingFlow(): Promise<void> {
     await this.waitForVisible(this.bookAppointmentLink(), '"Book an appointment" link');
     await this.bookAppointmentLink().click();
-    await this.page.waitForLoadState('networkidle');
+    await this.waitAfterAction(this.serviceDropdown(), 'service type dropdown');
   }
 
   /**
    * Step 1 — Select the service / appointment type from the dropdown.
+   * Waits for the provider dropdown to appear after the selection.
    *
    * @param serviceType  Must exactly match a valid option in the portal
    *                     (set via HCH_SERVICE_TYPE in .env)
@@ -118,12 +119,12 @@ export class AppointmentBookingPage extends BasePage {
   async selectService(serviceType: string): Promise<void> {
     await this.waitForVisible(this.serviceDropdown(), 'service type dropdown');
     await this.serviceDropdown().selectOption({ label: serviceType });
-    // Some portals reload the provider list after service selection — wait for it
-    await this.page.waitForLoadState('networkidle');
+    await this.waitAfterAction(this.providerDropdown(), 'provider dropdown');
   }
 
   /**
    * Step 2 — Select the provider / clinician.
+   * Waits for the date input to appear after the selection.
    *
    * @param providerName  Must exactly match a valid option in the portal
    *                      (set via HCH_PROVIDER_NAME in .env)
@@ -131,41 +132,40 @@ export class AppointmentBookingPage extends BasePage {
   async selectProvider(providerName: string): Promise<void> {
     await this.waitForVisible(this.providerDropdown(), 'provider dropdown');
     await this.providerDropdown().selectOption({ label: providerName });
-    await this.page.waitForLoadState('networkidle');
+    await this.waitAfterAction(this.dateInput(), 'date input');
   }
 
   /**
    * Step 3 — Enter the preferred date.
-   * Fills the date input in YYYY-MM-DD format (standard HTML date value format).
+   * Waits for available time slots to appear after the date is entered.
    *
    * @param date  e.g. '2026-04-01' (set via HCH_PREFERRED_DATE in .env)
    */
   async selectDate(date: string): Promise<void> {
     await this.waitForVisible(this.dateInput(), 'date input');
     await this.dateInput().fill(date);
-    // Trigger change events so the portal loads available slots
     await this.dateInput().press('Tab');
-    await this.page.waitForLoadState('networkidle');
+    await this.waitAfterAction(this.firstAvailableSlot(), 'first available time slot');
   }
 
   /**
    * Step 4 — Click the first available time slot.
-   * If the portal shows no available slots, this step will fail with a clear
-   * timeout error — in that case try a different date in your .env file.
+   * Waits for the confirm button to appear after selecting a slot.
    */
   async selectFirstAvailableSlot(): Promise<void> {
     await this.waitForVisible(this.firstAvailableSlot(), 'first available time slot');
     await this.firstAvailableSlot().click();
-    await this.page.waitForLoadState('networkidle');
+    await this.waitAfterAction(this.confirmButton(), '"Confirm booking" button');
   }
 
   /**
    * Final step — click "Confirm booking" to submit the appointment.
+   * Waits for the confirmation heading to appear after submission.
    */
   async confirmBooking(): Promise<void> {
     await this.waitForVisible(this.confirmButton(), '"Confirm booking" button');
     await this.confirmButton().click();
-    await this.page.waitForLoadState('networkidle');
+    await this.waitAfterAction(this.bookingConfirmationHeading(), 'booking confirmation');
   }
 
   // ── Assertions ──────────────────────────────────────────────────────────────
