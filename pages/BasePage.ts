@@ -44,18 +44,23 @@ export abstract class BasePage {
 
   /**
    * Navigate to a path relative to the portal base URL and wait for the
-   * network to settle. Use this for any page-level navigation in subclasses.
+   * page to load. Use this for any page-level navigation in subclasses.
    *
    * @param path  e.g. '/appointments/book' or '/login'
    */
   async navigateTo(path: string): Promise<void> {
     await this.page.goto(`${this.baseUrl}${path}`);
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('load');
   }
 
   /** Returns the current browser tab title — useful in smoke-test assertions. */
   async getPageTitle(): Promise<string> {
     return this.page.title();
+  }
+
+  /** Returns the current page URL — use this instead of accessing page.url() directly. */
+  currentUrl(): string {
+    return this.page.url();
   }
 
   // ── Waiting helpers ─────────────────────────────────────────────────────────
@@ -74,5 +79,27 @@ export abstract class BasePage {
       .catch(() => {
         throw new Error(`Timed out waiting for element to be visible: "${description}"`);
       });
+  }
+
+  /**
+   * Wait after an action (click, select, fill) for the UI to settle.
+   *
+   * Strategy:
+   *   - If nextLocator is provided: wait for that element to become visible.
+   *     Works for both full-page navigations and AJAX-driven DOM updates.
+   *   - If no nextLocator: fall back to waitForLoadState('load').
+   *
+   * Always prefer passing nextLocator — it makes waits self-terminating and
+   * avoids arbitrary timeouts.
+   *
+   * @param nextLocator  The element expected to appear after the action
+   * @param description  Plain-English label for the error message if it times out
+   */
+  async waitAfterAction(nextLocator?: Locator, description?: string): Promise<void> {
+    if (nextLocator) {
+      await this.waitForVisible(nextLocator, description ?? 'next element after action');
+    } else {
+      await this.page.waitForLoadState('load');
+    }
   }
 }
